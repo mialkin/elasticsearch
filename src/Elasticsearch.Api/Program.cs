@@ -26,8 +26,6 @@ app.UseSwaggerUI(options =>
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
-    // endpoints.MapHealthChecks();
-    // endpoints.MapMetrics();
     endpoints.MapControllers();
 });
 
