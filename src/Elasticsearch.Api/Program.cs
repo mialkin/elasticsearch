@@ -1,3 +1,5 @@
+using Elasticsearch.Api.Configuration;
+using Elasticsearch.Api.Configuration.Elasticsearch;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ services.AddOptions();
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+
+services.ConfigureApplication();
+services.ConfigureElasticsearch(configuration);
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
