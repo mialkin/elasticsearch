@@ -1,13 +1,11 @@
-using Elasticsearch.Api.Bogus.Commands;
 using Elasticsearch.Api.Bogus.Dtos;
-using Elasticsearch.Api.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
 
 namespace Elasticsearch.Api.Bogus;
 
 [Route("api/bogus")]
-public class BogusController : ApiControllerBase
+public class BogusController : ControllerBase
 {
     private readonly IElasticClient _elasticClient;
 
@@ -15,19 +13,19 @@ public class BogusController : ApiControllerBase
     {
         _elasticClient = elasticClient;
     }
-    
+
     [HttpPost]
-    public async Task<IActionResult> Index([FromBody] IndexBogusDto dto)
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        await Mediator.Send(new IndexBogusDtoCommand(dto));
-        
+        var document = new IndexBogusDto("The title", Random.Shared.Next(300));
+        await _elasticClient.IndexDocumentAsync(document, cancellationToken);
         return Ok();
     }
-    
+
     [HttpGet("search")]
-    public async Task<IActionResult> Search()
+    public async Task<IActionResult> Search(CancellationToken cancellationToken)
     {
-        var result = await _elasticClient.SearchAsync<IndexBogusDto>();
-        return Ok(result);
+        var response = await _elasticClient.SearchAsync<IndexBogusDto>(ct: cancellationToken);
+        return Ok(response.Documents);
     }
 }
