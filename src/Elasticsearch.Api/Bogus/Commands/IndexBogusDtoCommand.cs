@@ -14,11 +14,12 @@ internal class IndexBogusDtoCommandHandler : IRequestHandler<IndexBogusDtoComman
     {
         _elasticClient = elasticClient;
     }
-    
+
     public async Task<Unit> Handle(IndexBogusDtoCommand request, CancellationToken cancellationToken)
     {
-        var result = await _elasticClient.SearchAsync<IndexBogusDto>(ct: cancellationToken);
-        
+        var document = new IndexBogusDto("The title", Random.Shared.Next(300));
+        var result = await _elasticClient.IndexDocumentAsync(document, cancellationToken);
+
         return Unit.Value;
     }
 }
