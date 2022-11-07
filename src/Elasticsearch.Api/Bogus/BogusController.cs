@@ -26,9 +26,10 @@ public class BogusController : ControllerBase
     public async Task<IActionResult> Search(CancellationToken cancellationToken)
     {
         var response =
-            await _elasticClient.SearchAsync<IndexBogusDto>(x => x.Size(100).Query(y => y.MatchAll()),
+            await _elasticClient.SearchAsync<IndexBogusDto>(x =>
+                    x.Size(100).Query(y => y.MatchAll()),
                 cancellationToken);
-        
+
         return Ok(response.Documents);
     }
 }
