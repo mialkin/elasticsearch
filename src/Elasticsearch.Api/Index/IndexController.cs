@@ -16,9 +16,23 @@ public class IndexController : ControllerBase
     [HttpGet("list-all")]
     public async Task<IActionResult> List()
     {
+        // GET /_cat/indices?v
         var result = await _elasticClient.Indices.GetAsync(new GetIndexRequest(Indices.All));
         var indexNames = result.Indices.Select(x => x.Key.Name);
         return Ok(indexNames);
+    }
+
+    [HttpGet("get")]
+    public async Task<IActionResult> Get(string indexName)
+    {
+        // GET indexName
+        var result = await _elasticClient.Indices.GetAsync(indexName);
+        var index = result.Indices.First();
+        var name = index.Key.Name;
+        var settings = index.Value.Settings;
+        var mappings = index.Value.Mappings;
+        var aliases = index.Value.Aliases;
+        return Ok(new { name, aliases, mappings, settings });
     }
 
     [HttpPost("create")]
