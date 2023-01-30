@@ -41,4 +41,12 @@ public class IndexController : ControllerBase
         await _elasticClient.Indices.CreateAsync(indexName);
         return Ok();
     }
+
+    [HttpPost("delete")]
+    public async Task<IActionResult> Delete(string indexName)
+    {
+        // DELETE indexName
+        await _elasticClient.Indices.DeleteAsync(indexName);
+        return Ok();
+    }
 }
