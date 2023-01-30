@@ -3,7 +3,7 @@
     "Elasticsearch.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5045",
+      "applicationUrl": "http://localhost:2010",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
