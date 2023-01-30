@@ -6,11 +6,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{01B0EE79
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F095C83-FD97-441E-9DBC-285F1218F71F}"
 	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
 		Makefile = Makefile
-		.env = .env
 		.gitignore = .gitignore
-		docker-compose.old.yml = docker-compose.old.yml
+		docker-compose.yml = docker-compose.yml
+		.env.example = .env.example
+		docker-compose.tools.yml = docker-compose.tools.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2D38FFA3-C5C6-4A56-A588-E00F6BA5B6CA}"
