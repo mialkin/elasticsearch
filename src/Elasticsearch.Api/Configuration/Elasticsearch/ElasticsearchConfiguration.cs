@@ -36,7 +36,8 @@ public static class ElasticsearchConfiguration
 
             var connectionPool = new StaticConnectionPool(uris);
             var connectionSettings = new ConnectionSettings(connectionPool)
-                .DefaultIndex("bogus");
+                .DefaultIndex("bogus")
+                .EnableDebugMode();
 
             return new ElasticClient(connectionSettings);
         });
