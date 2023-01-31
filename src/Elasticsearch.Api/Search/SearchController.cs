@@ -13,7 +13,7 @@ public class SearchController : ControllerBase
     {
         _elasticClient = elasticClient;
     }
-    
+
     [HttpGet("match-all")]
     public async Task<IActionResult> MathAll()
     {
@@ -26,6 +26,30 @@ public class SearchController : ControllerBase
         //     }
         // }
         var result = await _elasticClient.SearchAsync<ProductDto>(x => x.Index("products").MatchAll());
+        var documents = result.Documents;
+        return Ok(documents);
+    }
+
+    [HttpGet("term-price")]
+    public async Task<IActionResult> TermPrice(decimal price)
+    {
+        // GET products/_search
+        // {
+        //     "query": {
+        //         "term": {
+        //             "price": {
+        //                 "value": 19.99
+        //             }
+        //         }
+        //     }
+        // }
+        var result = await _elasticClient.SearchAsync<ProductDto>(search =>
+            search
+                .Index("products")
+                .Query(query =>
+                    query.Term(x => x.Field(y => y.Price).Value(price)))
+        );
+
         var documents = result.Documents;
         return Ok(documents);
     }
