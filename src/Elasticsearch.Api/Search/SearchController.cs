@@ -53,4 +53,29 @@ public class SearchController : ControllerBase
         var documents = result.Documents;
         return Ok(documents);
     }
+
+    [HttpGet("term-prices")]
+    public async Task<IActionResult> TermPrices(IEnumerable<decimal> prices)
+    {
+        // GET products/_search
+        // {
+        //     "query": {
+        //         "terms": {
+        //             "price": [
+        //             19.99,
+        //             10.99
+        //                 ]
+        //         }
+        //     }
+        // }
+        var result = await _elasticClient.SearchAsync<ProductDto>(search =>
+            search
+                .Index("products")
+                .Query(query =>
+                    query.Terms(x => x.Field(y => y.Price).Terms(prices)))
+        );
+
+        var documents = result.Documents;
+        return Ok(documents);
+    }
 }
