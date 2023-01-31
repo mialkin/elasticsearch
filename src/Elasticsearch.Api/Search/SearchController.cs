@@ -78,4 +78,81 @@ public class SearchController : ControllerBase
         var documents = result.Documents;
         return Ok(documents);
     }
+
+    [HttpGet("term-prices-and-name")]
+    public async Task<IActionResult> TermPricesAndName(IEnumerable<decimal> prices, string name)
+    {
+        // GET products/_search
+        // {
+        //     "query": {
+        //         "bool": {
+        //             "must": [
+        //             {
+        //                 "terms": {
+        //                     "price": [
+        //                     19.99,
+        //                     10.99
+        //                         ]
+        //                 }
+        //             },
+        //             {
+        //                 "term": {
+        //                     "name": {
+        //                         "value": "pillow"
+        //                     }
+        //                 }
+        //             }
+        //             ]
+        //         }
+        //     }
+        // }
+        var result = await _elasticClient.SearchAsync<ProductDto>(search =>
+            search
+                .Index("products")
+                .Query(query => query
+                    .Terms(x => x.Field(y => y.Price).Terms(prices)) && query
+                    .Term(x => x.Field(y => y.Name).Value(name)))
+        );
+
+        var documents = result.Documents;
+        return Ok(documents);
+    }
+    
+    [HttpGet("term-prices-or-name")]
+    public async Task<IActionResult> TermPricesOrName(IEnumerable<decimal> prices, string name)
+    {
+        // GET products/_search
+        // {
+        //     "query": {
+        //         "bool": {
+        //             "should": [
+        //             {
+        //                 "terms": {
+        //                     "price": [
+        //                     19.99
+        //                         ]
+        //                 }
+        //             },
+        //             {
+        //                 "term": {
+        //                     "name": {
+        //                         "value": "chair"
+        //                     }
+        //                 }
+        //             }
+        //             ]
+        //         }
+        //     }
+        // }
+        var result = await _elasticClient.SearchAsync<ProductDto>(search =>
+            search
+                .Index("products")
+                .Query(query => query
+                    .Terms(x => x.Field(y => y.Price).Terms(prices)) || query
+                    .Term(x => x.Field(y => y.Name).Value(name)))
+        );
+
+        var documents = result.Documents;
+        return Ok(documents);
+    }
 }
