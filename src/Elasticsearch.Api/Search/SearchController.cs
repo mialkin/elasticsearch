@@ -1,3 +1,4 @@
+using Elasticsearch.Api.Configuration.Elasticsearch;
 using Elasticsearch.Api.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
@@ -7,21 +8,17 @@ namespace Elasticsearch.Api.Search;
 [Route("api/search")]
 public class SearchController : ControllerBase
 {
-    private const string ProductsIndex = "products";
     private readonly IElasticClient _elasticClient;
 
-    public SearchController(IElasticClient elasticClient)
-    {
-        _elasticClient = elasticClient;
-    }
+    public SearchController(IElasticClient elasticClient) => _elasticClient = elasticClient;
 
     [HttpGet("match-all")]
     public async Task<IActionResult> MathAll()
     {
-        var result = await _elasticClient.SearchAsync<ProductDto>(x => x.Index(ProductsIndex).MatchAll());
+        var result = await _elasticClient.SearchAsync<ProductDto>(x => x.Index(DefaultIndices.Products).MatchAll());
         var documents = result.Documents;
         return Ok(documents);
-        
+
         // GET products/_search
         // or:
         // GET products/_search
@@ -37,14 +34,14 @@ public class SearchController : ControllerBase
     {
         var result = await _elasticClient.SearchAsync<ProductDto>(search =>
             search
-                .Index(ProductsIndex)
+                .Index(DefaultIndices.Products)
                 .Query(query =>
                     query.Term(x => x.Field(y => y.Price).Value(price)))
         );
 
         var documents = result.Documents;
         return Ok(documents);
-        
+
         // GET products/_search
         // {
         //     "query": {
@@ -62,14 +59,14 @@ public class SearchController : ControllerBase
     {
         var result = await _elasticClient.SearchAsync<ProductDto>(search =>
             search
-                .Index(ProductsIndex)
+                .Index(DefaultIndices.Products)
                 .Query(query =>
                     query.Terms(x => x.Field(y => y.Price).Terms(prices)))
         );
 
         var documents = result.Documents;
         return Ok(documents);
-        
+
         // GET products/_search
         // {
         //     "query": {
@@ -88,7 +85,7 @@ public class SearchController : ControllerBase
     {
         var result = await _elasticClient.SearchAsync<ProductDto>(search =>
             search
-                .Index(ProductsIndex)
+                .Index(DefaultIndices.Products)
                 .Query(query => query
                     .Terms(x => x.Field(y => y.Price).Terms(prices)) && query
                     .Term(x => x.Field(y => y.Name).Value(name)))
@@ -96,7 +93,7 @@ public class SearchController : ControllerBase
 
         var documents = result.Documents;
         return Ok(documents);
-        
+
         // GET products/_search
         // {
         //     "query": {
@@ -122,13 +119,13 @@ public class SearchController : ControllerBase
         //     }
         // }
     }
-    
+
     [HttpGet("term-prices-or-name")]
     public async Task<IActionResult> TermPricesOrName(IEnumerable<decimal> prices, string name)
     {
         var result = await _elasticClient.SearchAsync<ProductDto>(search =>
             search
-                .Index(ProductsIndex)
+                .Index(DefaultIndices.Products)
                 .Query(query => query
                     .Terms(x => x.Field(y => y.Price).Terms(prices)) || query
                     .Term(x => x.Field(y => y.Name).Value(name)))
@@ -136,7 +133,7 @@ public class SearchController : ControllerBase
 
         var documents = result.Documents;
         return Ok(documents);
-        
+
         // GET products/_search
         // {
         //     "query": {

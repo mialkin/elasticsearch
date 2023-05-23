@@ -1,3 +1,4 @@
+using Elasticsearch.Api.Configuration.Elasticsearch;
 using Elasticsearch.Api.Dtos;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,14 @@ public class DocumentController : ControllerBase
 {
     private readonly IElasticClient _elasticClient;
 
-    public DocumentController(IElasticClient elasticClient)
-    {
-        _elasticClient = elasticClient;
-    }
-    
+    public DocumentController(IElasticClient elasticClient) => _elasticClient = elasticClient;
+
     [HttpPost("create")]
-    public async Task<IActionResult> Create(ProductDto document) {
+    public async Task<IActionResult> Create(ProductDto document)
+    {
+        await _elasticClient.IndexAsync(document, x => x.Refresh(Refresh.WaitFor).Index(DefaultIndices.Products));
+        return Ok();
+
         // POST products/_doc
         // {
         // }
@@ -29,24 +31,24 @@ public class DocumentController : ControllerBase
         //     "price": 19.99,
         //     "createdOn": "2023-02-13T00:00:00"
         // }
-        await _elasticClient.IndexAsync(document, x => x.Refresh(Refresh.WaitFor).Index("products"));
-        return Ok();
     }
-    
+
     [HttpPost("get-by-id")]
     public async Task<IActionResult> GetById(string id)
     {
-        // GET products/_doc/id
-        var result = await _elasticClient.GetAsync<ProductDto>(id, x => x.Index("products"));
+        var result = await _elasticClient.GetAsync<ProductDto>(id, x => x.Index(DefaultIndices.Products));
         var dto = result.Source;
         return Ok(dto);
+
+        // GET products/_doc/id
     }
-    
+
     [HttpPost("delete-by-id")]
     public async Task<IActionResult> Delete(string id)
     {
-        // DELETE products/_doc/id
-        await _elasticClient.DeleteAsync(new DeleteRequest("products", id));
+        await _elasticClient.DeleteAsync(new DeleteRequest(DefaultIndices.Products, id));
         return Ok();
+
+        // DELETE products/_doc/id
     }
 }
