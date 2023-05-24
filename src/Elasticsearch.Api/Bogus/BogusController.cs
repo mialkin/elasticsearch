@@ -1,3 +1,4 @@
+using Bogus;
 using Elasticsearch.Api.Bogus.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
@@ -17,7 +18,10 @@ public class BogusController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var document = new IndexBogusDto("The title", Random.Shared.Next(300));
+        var faker = new Faker("ru");
+        var title = faker.Random.Word();
+        
+        var document = new IndexBogusDto(title, NumberOfPages: Random.Shared.Next(300));
         await _elasticClient.IndexDocumentAsync(document, cancellationToken);
         return Ok();
     }
