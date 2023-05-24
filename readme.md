@@ -3,7 +3,7 @@
 Run infrastructure:
 
 ```bash
-make run-infrasructure
+make run-infrastructure
 ```
 
 ## Links
