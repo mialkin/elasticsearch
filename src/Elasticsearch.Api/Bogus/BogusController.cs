@@ -15,8 +15,8 @@ public class BogusController : ControllerBase
         _elasticClient = elasticClient;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    [HttpPost("index-random-document")]
+    public async Task<IActionResult> IndexRandomDocument(CancellationToken cancellationToken)
     {
         var faker = new Faker("ru");
         var title = faker.Random.Word();
